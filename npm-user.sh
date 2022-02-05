@@ -72,7 +72,9 @@ main() {
     add-to-path "$rc" "$bin" "$man" >> "$rc"
   fi
 
-  printf "Done.\n"
+  printf "Done.\n\n"
+  printf "To load the changes in this shell, run:\n"
+  printf "\tsource $rc\n"
 }
 
 

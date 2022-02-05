@@ -20,3 +20,10 @@ The script takes 4 optional positional arguments:
 $ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" \
     | bash -s "~/.local" "~/.zshrc"
 ```
+## Confirming it works
+Install a package with the global flag `-g` and then see where `npm` puts the files:
+```bash
+$ npm install -g yarn
+$ type yarn
+yarn is /home/user/.npm-packages/bin/yarn
+```

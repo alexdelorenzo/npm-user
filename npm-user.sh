@@ -8,7 +8,7 @@ export NPM_BIN="$NPM_ROOT/bin"
 export NPM_MAN="$NPM_ROOT/share/man"
 
 export BASH_RC="$HOME/.bashrc"
-export ZSH_RC="$HOME/.bashrc"
+export ZSH_RC="$HOME/.zshrc"
 export DEFAULT_RC="$HOME/.bashrc"
 
 export NULL="/dev/null"

@@ -52,6 +52,7 @@ add-to-path () {
   cat <<EOF
 export PATH="\$PATH:$bin"
 export MANPATH="\${MANPATH:-\$(manpath)}:$man"
+export NPM_PACKAGES="$NPM_ROOT"
 EOF
 }
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright Alex DeLorenzo (alexdelorenzo.dev). Licensed under the GPLv3.
+# Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
 export ROOT="${1:-$HOME}"
 
 export NPM_DIR=".npm-packages"

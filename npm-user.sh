@@ -9,7 +9,7 @@ export NPM_MAN="$NPM_ROOT/share/man"
 
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
-export DEFAULT_RC="$HOME/.bashrc"
+export DEFAULT_RC="$BASH_RC"
 
 export NULL="/dev/null"
 test $OSTYPE == win* &&

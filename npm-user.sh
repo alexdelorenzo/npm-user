@@ -15,6 +15,8 @@ export NULL="/dev/null"
 test $OSTYPE == win* &&
   export NULL="NUL"
 
+export RC_ERR=1
+
 
 quiet() {
   "$@" &> "$NULL"
@@ -63,10 +65,16 @@ main() {
   local man="${3:-$NPM_MAN}"
 
   printf "Creating $bin and $man\n"
-  create-paths "$bin" "$man"
-
+  create-paths "$bin" "$man" || {
+    printf "Couldn't create paths."  
+    return $RC_ERR
+  }
+  
   printf "Setting npm prefix.\n"
-  set-prefix
+  set-prefix || {
+    printf "Couldn't set prefix."  
+    return $RC_ERR
+  }
 
   if ! already-added "$rc" "$bin"; then
     printf "Writing to %s.\n" "$rc"

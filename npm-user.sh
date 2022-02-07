@@ -46,7 +46,7 @@ already-added() {
 }
 
 
-add-to-path () {
+add-to-path() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
   local man="${3:-$NPM_MAN}"

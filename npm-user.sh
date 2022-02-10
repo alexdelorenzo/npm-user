@@ -11,15 +11,11 @@ export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export DEFAULT_RC="$BASH_RC"
 
-export NULL="/dev/null"
-test $OSTYPE == win* &&
-  export NULL="NUL"
-
 export RC_ERR=1
 
 
 quiet() {
-  "$@" &> "$NULL"
+  "$@" &> /dev/null
 }
 
 

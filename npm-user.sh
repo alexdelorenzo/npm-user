@@ -12,8 +12,9 @@ export ZSH_RC="$HOME/.zshrc"
 export DEFAULT_RC="$BASH_RC"
 
 export RC_ERR=1
+export INDENT=4
 
-alias indent="paste /dev/null -"
+alias indent="paste /dev/null - | expand -$INDENT"
 
 
 quiet() {

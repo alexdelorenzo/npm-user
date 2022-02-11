@@ -35,16 +35,7 @@ set-prefix() {
 }
 
 
-already-added() {
-  local rc="${1:-$DEFAULT_RC}"
-  local bin="${2:-$NPM_BIN}"
-  local line="export PATH=\"\$PATH:$bin\""
-
-  quiet grep "$line" "$rc"
-}
-
-
-add-to-path() {
+get-vars() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
 
@@ -53,6 +44,15 @@ export PATH="\$PATH:$bin"
 export MANPATH="\${MANPATH:-\$(manpath)}:$man"
 export NPM_PACKAGES="$NPM_ROOT"
 EOF
+}
+
+
+already-added() {
+  local rc="${1:-$DEFAULT_RC}"
+  local bin="${2:-$NPM_BIN}"
+  local vars="$(get-vars "$rc" "$b")"
+
+  quiet grep "$vars" "$rc"
 }
 
 
@@ -75,13 +75,13 @@ main() {
 
   if ! already-added "$rc" "$bin"; then
     printf "Writing to %s.\n" "$rc"
-    add-to-path "$bin" "$man" >> "$rc"
+    get-vars "$bin" "$man" >> "$rc"
  
   fi || {
     printf "Unable to write to $rc.\n"
     printf "Add the following to your shell's configuration file:\n\n"
 
-    add-to-path "$bin" "$man" | indent
+    get-vars "$bin" "$man" | indent
     return $RC_ERR
   }
 

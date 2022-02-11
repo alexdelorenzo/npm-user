@@ -62,20 +62,26 @@ main() {
 
   printf "Creating $bin and $man\n"
   create-paths "$bin" "$man" || {
-    printf "Couldn't create paths."  
+    printf "Couldn't create paths.\n"  
     return $RC_ERR
   }
   
   printf "Setting npm prefix.\n"
   set-prefix || {
-    printf "Couldn't set prefix."  
+    printf "Couldn't set prefix.\n"  
     return $RC_ERR
   }
 
   if ! already-added "$rc" "$bin"; then
     printf "Writing to %s.\n" "$rc"
     add-to-path "$rc" "$bin" "$man" >> "$rc"
-  fi
+  fi || {
+    printf "Unable to write to $rc.\n"
+    printf "Add the following to your shell's configuration file:\n\n"
+
+    add-to-path "$rc" "$bin" "$man"
+    return $RC_ERR
+  }
 
   printf "Done.\n\n"
   printf "To load the changes in this shell, run:\n"

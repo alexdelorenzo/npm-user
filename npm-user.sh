@@ -14,6 +14,9 @@ export DEFAULT_RC="$BASH_RC"
 export RC_ERR=1
 
 
+alias indent="paste /dev/null -"
+
+
 quiet() {
   "$@" &> /dev/null
 }
@@ -43,9 +46,8 @@ already-added() {
 
 
 add-to-path() {
-  local rc="${1:-$DEFAULT_RC}"
-  local bin="${2:-$NPM_BIN}"
-  local man="${3:-$NPM_MAN}"
+  local bin="${1:-$NPM_BIN}"
+  local man="${2:-$NPM_MAN}"
 
   cat <<EOF
 export PATH="\$PATH:$bin"
@@ -74,12 +76,13 @@ main() {
 
   if ! already-added "$rc" "$bin"; then
     printf "Writing to %s.\n" "$rc"
-    add-to-path "$rc" "$bin" "$man" >> "$rc"
+    add-to-path "$bin" "$man" >> "$rc"
+ 
   fi || {
     printf "Unable to write to $rc.\n"
     printf "Add the following to your shell's configuration file:\n\n"
 
-    add-to-path "$rc" "$bin" "$man"
+    add-to-path "$bin" "$man" | indent
     return $RC_ERR
   }
 

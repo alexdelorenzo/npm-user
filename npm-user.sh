@@ -13,7 +13,6 @@ export DEFAULT_RC="$BASH_RC"
 
 export RC_ERR=1
 
-
 alias indent="paste /dev/null -"
 
 

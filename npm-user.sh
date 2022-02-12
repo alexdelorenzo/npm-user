@@ -51,8 +51,9 @@ EOF
 already-added() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
-  local vars="$(get-vars "$rc" "$b")"
+  local man="${2:-$NPM_MAN}"
 
+  local vars="$(get-vars "$rc" "$bin" "$man")"
   quiet grep "$vars" "$rc"
 }
 
@@ -74,7 +75,7 @@ main() {
     return $RC_ERR
   }
 
-  if ! already-added "$rc" "$bin"; then
+  if ! already-added "$rc" "$bin" "$man"; then
     printf "Writing to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"
  

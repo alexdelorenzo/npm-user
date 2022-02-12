@@ -1,7 +1,14 @@
 # 🏠 Install `npm` packages as a user
 On an unmodified `npm` install, when you run `npm install -g <package>`, packages will be installed at the system level, which requires `root` privileges. 
 
-After running this script, `npm` will install packages as your local user. The script will set up `npm` user directories for you, and then automatically add them to your `$PATH`. You won't need `root` privileges because packages won't be installed at the system level.
+After running this script, `npm` will install packages as your local user. The script will set up `npm` user directories for you, and then automatically add them to your `$PATH`.
+
+You won't need `root` privileges because packages won't be installed at the system level:
+```bash
+$ npm install -g yarn
+$ type yarn
+yarn is /home/user/.npm-packages/bin/yarn
+```
 
 ## Usage
 Run the following:

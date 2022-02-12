@@ -12,10 +12,10 @@ export ZSH_RC="$HOME/.zshrc"
 export DEFAULT_RC="$BASH_RC"
 
 export RC_ERR=1
-export INDENT=4
+export INDENT=2
 
 alias indent="paste /dev/null - | expand -$INDENT"
-
+alias indent
 
 quiet() {
   "$@" &> /dev/null
@@ -89,7 +89,7 @@ main() {
  
   fi || {
     printf "Unable to write to $rc.\n"
-    printf "Add the following to your shell's configuration file:\n\n"
+    printf "Add the following to your shell's configuration file:\n\n  "
 
     get-vars "$bin" "$man" | indent
     return $RC_ERR

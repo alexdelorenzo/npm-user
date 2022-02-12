@@ -22,6 +22,14 @@ quiet() {
 }
 
 
+expand-tilde() {
+  local path="$1"
+ 
+  echo "${path/#\~/$HOME}"
+}
+export -f expand-tilde
+
+
 create-paths() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
@@ -59,9 +67,9 @@ already-added() {
 
 
 main() {
-  local rc="$(realpath "${1:-$DEFAULT_RC}")"
-  local bin="$(realpath "${2:-$NPM_BIN}")"
-  local man="$(realpath "${3:-$NPM_MAN}")"
+  local rc="$(expand-tilde "${1:-$DEFAULT_RC}")"
+  local bin="$(expand-tilde "${2:-$NPM_BIN}")"
+  local man="$(expand-tilde "${3:-$NPM_MAN}")"
 
   printf "Creating $bin and $man\n"
   create-paths "$bin" "$man" || {

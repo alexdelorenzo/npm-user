@@ -59,9 +59,9 @@ already-added() {
 
 
 main() {
-  local rc="${1:-$DEFAULT_RC}"
-  local bin="${2:-$NPM_BIN}"
-  local man="${3:-$NPM_MAN}"
+  local rc="$(realpath "${1:-$DEFAULT_RC}")"
+  local bin="$(realpath "${2:-$NPM_BIN}")"
+  local man="$(realpath "${3:-$NPM_MAN}")"
 
   printf "Creating $bin and $man\n"
   create-paths "$bin" "$man" || {

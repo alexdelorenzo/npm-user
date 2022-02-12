@@ -15,7 +15,7 @@ export RC_ERR=1
 export INDENT=2
 
 alias indent="paste /dev/null - | expand -$INDENT"
-alias indent
+
 
 quiet() {
   "$@" &> /dev/null
@@ -23,11 +23,9 @@ quiet() {
 
 
 expand-tilde() {
-  local path="$1"
- 
+  local path="$1" 
   echo "${path/#\~/$HOME}"
 }
-export -f expand-tilde
 
 
 create-paths() {

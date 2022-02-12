@@ -32,8 +32,7 @@ create-paths() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
 
-  mkdir --parents --verbose "$bin"
-  mkdir --parents --verbose "$man"
+  mkdir --parents --verbose "$bin" "$man"
 }
 
 

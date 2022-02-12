@@ -53,7 +53,7 @@ already-added() {
   local bin="${2:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
 
-  local vars="$(get-vars "$rc" "$bin" "$man")"
+  local vars="$(get-vars "$bin" "$man")"
   quiet grep "$vars" "$rc"
 }
 

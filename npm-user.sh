@@ -14,6 +14,8 @@ export DEFAULT_RC="$BASH_RC"
 export RC_ERR=1
 export INDENT=2
 
+set -e
+
 alias indent="paste /dev/null - | expand -$INDENT"
 
 

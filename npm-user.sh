@@ -90,7 +90,7 @@ main() {
  
   fi || {
     printf "Unable to write to %s.\n" "$rc"
-    printf "Add the following to your shell's configuration file:\n\n  "
+    printf "Add the following to your shell's configuration file:\n\n"
 
     get-vars "$bin" "$man" | indent
     return $RC_ERR

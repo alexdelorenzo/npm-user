@@ -70,9 +70,9 @@ main() {
   local bin="$(expand-tilde "${2:-$NPM_BIN}")"
   local man="$(expand-tilde "${3:-$NPM_MAN}")"
 
-  printf "Creating $bin and $man\n"
+  printf "Creating %s and %s\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
-    printf "Couldn't create paths.\n"  
+    printf "Couldn't create paths: %s and %s.\n" "$bin" "$man" 
     return $RC_ERR
   }
   
@@ -87,7 +87,7 @@ main() {
     get-vars "$bin" "$man" >> "$rc"
  
   fi || {
-    printf "Unable to write to $rc.\n"
+    printf "Unable to write to %s.\n" "$rc"
     printf "Add the following to your shell's configuration file:\n\n  "
 
     get-vars "$bin" "$man" | indent
@@ -96,7 +96,7 @@ main() {
 
   printf "Done.\n\n"
   printf "To load the changes in this shell, run:\n"
-  printf "\tsource $rc\n"
+  printf "\tsource %s\n" "$rc"
 }
 
 

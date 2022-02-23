@@ -1,5 +1,5 @@
 # 🏠 Install `npm` packages as a user
-On an unmodified `npm` install, when you run `npm install -g <package>`, packages will be installed at the system level, which requires `root` privileges. 
+On an unmodified `npm` install, when you run `npm install -g <package>`, packages will get installed at the system level, and that requires `root` privileges. 
 
 After running this script, `npm` will install packages as your local user. The script will set up `npm` user directories for you, and then automatically add them to your `$PATH`.
 

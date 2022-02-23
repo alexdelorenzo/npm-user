@@ -15,7 +15,6 @@ export RC_ERR=1
 export INDENT=2
 
 set -e
-
 shopt -s expand_aliases
 
 alias indent="paste /dev/null - | expand -$INDENT"

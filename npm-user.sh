@@ -81,7 +81,7 @@ main() {
   set-prefix || {
     printf "Couldn't set npm prefix.\n"
     quiet type npm || \
-      printf "Can't find npm in your \$PATH. Please install npm and try again."
+      printf "Can't find npm in your \$PATH. Please install npm and try again.\n"
 
     return $RC_ERR
   }

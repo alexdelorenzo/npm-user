@@ -79,7 +79,10 @@ main() {
   
   printf "Setting npm prefix.\n"
   set-prefix || {
-    printf "Couldn't set prefix.\n"  
+    printf "Couldn't set npm prefix.\n"
+    quiet type npm || \
+      printf "Can't find npm in your \$PATH. Please install npm and try again."
+
     return $RC_ERR
   }
 
@@ -90,8 +93,8 @@ main() {
   fi || {
     printf "Unable to write to %s.\n" "$rc"
     printf "Add the following to your shell's configuration file:\n\n"
-
     get-vars "$bin" "$man" | indent
+
     return $RC_ERR
   }
 

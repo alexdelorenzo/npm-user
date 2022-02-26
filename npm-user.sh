@@ -60,8 +60,8 @@ already-added() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
-
   local vars="$(get-vars "$bin" "$man")"
+
   quiet grep "$vars" "$rc"
 }
 
@@ -73,7 +73,7 @@ main() {
 
   printf "Creating %s and %s\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
-    printf "Couldn't create paths: %s and %s.\n" "$bin" "$man" 
+    printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     return $RC_ERR
   }
   

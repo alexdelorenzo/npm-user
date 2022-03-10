@@ -14,6 +14,9 @@ export DEFAULT_RC="$BASH_RC"
 export RC_ERR=1
 export INDENT=2
 
+set -e
+shopt -s expand_aliases
+
 alias indent="paste /dev/null - | expand -$INDENT"
 
 set -uo pipefail
@@ -59,8 +62,8 @@ already-added() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
-
   local vars="$(get-vars "$bin" "$man")"
+
   quiet grep "$vars" "$rc"
 }
 
@@ -70,15 +73,18 @@ main() {
   local bin="$(expand-tilde "${2:-$NPM_BIN}")"
   local man="$(expand-tilde "${3:-$NPM_MAN}")"
 
-  printf "Creating $bin and $man\n"
+  printf "Creating %s and %s\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
-    printf "Couldn't create paths.\n"  
+    printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     return $RC_ERR
   }
   
   printf "Setting npm prefix.\n"
   set-prefix || {
-    printf "Couldn't set prefix.\n"  
+    printf "Couldn't set npm prefix.\n"
+    quiet type npm || \
+      printf "Can't find npm in your \$PATH. Please install npm and try again.\n"
+
     return $RC_ERR
   }
 
@@ -87,16 +93,16 @@ main() {
     get-vars "$bin" "$man" >> "$rc"
  
   fi || {
-    printf "Unable to write to $rc.\n"
-    printf "Add the following to your shell's configuration file:\n\n  "
-
+    printf "Unable to write to %s.\n" "$rc"
+    printf "Add the following to your shell's configuration file:\n\n"
     get-vars "$bin" "$man" | indent
+
     return $RC_ERR
   }
 
   printf "Done.\n\n"
   printf "To load the changes in this shell, run:\n"
-  printf "\tsource $rc\n"
+  printf "\tsource %s\n" "$rc"
 }
 
 

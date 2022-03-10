@@ -16,6 +16,8 @@ export INDENT=2
 
 alias indent="paste /dev/null - | expand -$INDENT"
 
+set -uo pipefail
+
 
 quiet() {
   "$@" &> /dev/null

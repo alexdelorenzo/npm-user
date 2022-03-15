@@ -22,12 +22,12 @@ alias indent="paste /dev/null - | expand -$INDENT"
 
 get-shell-conf() {
   test -n "$BASH" && {
-    printf "$BASH_RC\n"
+    printf "$BASH_RC"
     return $RC_OK
   }
   
   test -n "$ZSH_NAME" && {
-    printf "$ZSH_RC\n"
+    printf "$ZSH_RC"
     return $RC_OK
   }
   

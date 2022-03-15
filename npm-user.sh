@@ -9,8 +9,8 @@ export NPM_MAN="$NPM_ROOT/share/man"
 
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
-export DEFAULT_RC="$BASH_RC"
 
+export RC_OK=0
 export RC_ERR=1
 export INDENT=2
 
@@ -18,6 +18,24 @@ set -e
 shopt -s expand_aliases
 
 alias indent="paste /dev/null - | expand -$INDENT"
+
+
+get-shell-conf() {
+  test -n "$BASH" && {
+    printf "$BASH_RC\n"
+    return $RC_OK
+  }
+  
+  test -n "$ZSH_NAME" && {
+    printf "$ZSH_RC\n"
+    return $RC_OK
+  }
+  
+  return $RC_ERR
+}
+
+
+export DEFAULT_RC="$(get-shell-conf)"
 
 
 quiet() {

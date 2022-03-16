@@ -17,6 +17,7 @@ export INDENT=2
 set -e
 shopt -s expand_aliases
 
+alias quiet='&>/dev/null'
 alias indent="paste /dev/null - | expand -$INDENT"
 
 
@@ -36,11 +37,6 @@ get-shell-conf() {
 
 
 export DEFAULT_RC="$(get-shell-conf)"
-
-
-quiet() {
-  "$@" &> /dev/null
-}
 
 
 expand-tilde() {

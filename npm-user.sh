@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
 export ROOT="${1:-$HOME}"
+export RC="$2"
+export BIN="$3"
+export MAN="$4"
 
 export NPM_DIR=".npm-packages"
 export NPM_ROOT="$ROOT/$NPM_DIR"
@@ -10,6 +13,9 @@ export NPM_MAN="$NPM_ROOT/share/man"
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export SH_RC="$HOME/.profile"
+
+export RED='\033[0;31m'
+export NC='\033[0m'
 
 export RC_OK=0
 export RC_ERR=1
@@ -21,6 +27,8 @@ shopt -s expand_aliases
 
 alias err='>&2'
 alias quiet='&>/dev/null'
+alias red="printf '$RED'"
+alias end="printf '$NC'"
 alias indent="paste /dev/null - | expand -$INDENT"
 
 
@@ -33,8 +41,12 @@ get-shell-conf() {
     sh*)  printf "$SH_RC" ;;
     *)
       printf "$SH_RC"
-      err printf "Unrecognized shell, defaulting to %s. " "$SH_RC"
+      err red
+      err printf "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
       err printf "Ensure your shell's variables are set manually.\n"
+      err end
+
+      return $RC_ERR
       ;;
 
   esac
@@ -125,4 +137,4 @@ main() {
 }
 
 
-main "$2" "$3" "$4"
+main "$RC" "$BIN" "$MAN"

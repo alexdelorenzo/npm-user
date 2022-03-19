@@ -15,28 +15,31 @@ export RC_OK=0
 export RC_ERR=1
 export INDENT=2
 
-set -e
+set -eo pipefail
 shopt -s expand_aliases
 
 
+alias err='>&2'
 alias quiet='&>/dev/null'
 alias indent="paste /dev/null - | expand -$INDENT"
 
-set -uo pipefail
-
 
 get-shell-conf() {
-  test -n "$BASH" && {
-    printf "$BASH_RC"
-    return $RC_OK
-  }
-  
-  test -n "$ZSH_NAME" && {
-    printf "$ZSH_RC"
-    return $RC_OK
-  }
-  
-  printf "$SH_RC"
+  local shell="$(ps -o comm= -p "$PPID")"
+
+  case "$shell" in
+    bash*)  printf "$BASH_RC" ;;
+    zsh*)  printf "$ZSH_RC" ;;
+    sh*)  printf "$SH_RC" ;;
+    *)
+      printf "$SH_RC"
+      err printf "Unrecognized shell, defaulting to %s. " "$SH_RC"
+      err printf "Ensure your shell's variables are set manually.\n"
+      ;;
+
+  esac
+
+  return $RC_OK
 }
 
 

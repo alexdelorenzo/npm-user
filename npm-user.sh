@@ -9,6 +9,7 @@ export NPM_MAN="$NPM_ROOT/share/man"
 
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
+export SH_RC="$HOME/.profile"
 
 export RC_OK=0
 export RC_ERR=1
@@ -16,6 +17,7 @@ export INDENT=2
 
 set -e
 shopt -s expand_aliases
+
 
 alias quiet='&>/dev/null'
 alias indent="paste /dev/null - | expand -$INDENT"
@@ -34,7 +36,7 @@ get-shell-conf() {
     return $RC_OK
   }
   
-  return $RC_ERR
+  printf "$SH_RC"
 }
 
 

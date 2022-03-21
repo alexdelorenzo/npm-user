@@ -47,7 +47,7 @@ yarn is /home/user/.npm-packages/bin/yarn
 
 ### Supported systems
 #### Shells
-This script works with any shell that supports `~/.profile`, like `sh` or `ksh` shells. It also works with configuration files for the following:
+This script works with any shell that supports `~/.profile`, like the `sh` or `ksh` shells. It also works with configuration files for the following:
 
  - `bash`
  - `zsh`

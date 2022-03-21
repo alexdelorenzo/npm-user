@@ -15,6 +15,7 @@ export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export SH_RC="$HOME/.profile"
 
+export GREEN='\033[0;32m'
 export RED='\033[0;31m'
 export NC='\033[0m'
 
@@ -28,38 +29,48 @@ shopt -s expand_aliases extglob
 
 alias err='>&2'
 alias quiet='&>/dev/null'
-alias red="printf '$RED'"
+
 alias end="printf '$NC'"
+alias red="printf '$RED'"
+alias green="printf '$GREEN'"
+alias in-red="color red"
+alias in-green="color green"
+
 alias indent="paste /dev/null - | expand -$INDENT"
 
 
-in-red() {
-  local content="${@:2}"
+color() {
+  local name="${1^^}"
+  local args=("${@:2}")
+  local color="${!name}"
 
-  red
-  printf "$content"
+  printf "$color"
+  printf "${args[@]}"
   end
 }
 
 
+
 fail-and-exit() {
-  err red
-  err printf "An error prevented the script from finishing, "
-  err printf "which could leave your system in an inconsistent state.\n"
-  err printf "Please fix any error and run the script again.\n"
-  err end
+  err in-red "An error prevented the script from finishing, "
+  err in-red "which could leave your system in an inconsistent state.\n"
+  err in-red "Please fix any error and run the script again.\n"
 
   exit $RC_ERR
 }
 
 
-get-shell-conf() {
-  test -n "$SHELL" && local shell="$SHELL" || {
+get-shell() {
+  test -n "$SHELL" && printf "$SHELL" || {
     local path="$(ps -o comm= -p "$PPID")"
-    local shell="$(basename -- "$path")"
+    printf "$(basename -- "$path")"
   }
+}
 
-  err printf "Found shell: %s\n" "$shell"
+
+get-shell-conf() {
+  local shell="$(get-shell)"
+  err printf "Configuring npm for use in shell: %s\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
@@ -67,10 +78,8 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-      err red
-      err printf "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
-      err printf "Ensure your shell's variables are set manually.\n"
-      err end
+      err in-red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
+      err in-red "Ensure your shell's variables are set manually.\n"
 
       return $RC_ERR
       ;;
@@ -134,15 +143,15 @@ main() {
 
   printf "Creating %s and %s\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
-    printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
+    err printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     fail-and-exit
   }
   
   printf "Setting npm prefix.\n"
   set-prefix || {
-    printf "Couldn't set npm prefix.\n"
-    quiet type npm || \
-      printf "Can't find npm in your \$PATH. Please install npm and try again.\n"
+    err printf "Couldn't set npm prefix.\n"
+    quiet type npm || err printf \
+      "Can't find npm in your \$PATH. Please install npm and try again.\n"
 
     fail-and-exit
   }
@@ -152,17 +161,16 @@ main() {
     get-vars "$bin" "$man" >> "$rc"
  
   fi || {
-    printf "Unable to write to %s.\n" "$rc"
-    printf "Add the following to your shell's configuration file:\n\n"
+    err printf "Unable to write to %s.\n" "$rc"
+    err printf "Add the following to your shell's configuration file:\n\n"
     get-vars "$bin" "$man" | indent
 
     fail-and-exit
   }
 
   printf "Done.\n\n"
-  printf "To load the changes in this shell, run:\n"
-  printf "\tsource %s\n" "$rc"
+  in-green "To load the changes in this shell, run:\n"
+  in-green "\tsource %s\n" "$rc"
 }
-
 
 main "$RC" "$BIN" "$MAN"

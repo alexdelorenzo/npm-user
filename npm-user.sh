@@ -156,6 +156,7 @@ main() {
     warn-and-exit
   }
 
+  printf "Updating shell configuration file: %s.\n" "$rc"
   already-added "$rc" "$bin" "$man" || {
     printf "Writing shell exports to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"

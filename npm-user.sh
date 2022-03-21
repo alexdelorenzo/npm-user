@@ -171,7 +171,7 @@ main() {
 
   printf "Completed successfully.\n\n"
   in-green "To load the changes in this shell, run:\n"
-  in-green "\tsource %s\n" "$rc"
+  in-green "\tsource %s\n\n" "$rc"
 }
 
 main "$RC" "$BIN" "$MAN"

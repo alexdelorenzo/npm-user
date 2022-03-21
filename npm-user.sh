@@ -54,7 +54,7 @@ color() {
 fail-and-exit() {
   err in-red "An error prevented the script from finishing, "
   err in-red "which could leave your system in an inconsistent state.\n"
-  err in-red "Please fix any error and run the script again.\n"
+  err in-red "Please fix any errors and run the script again.\n"
 
   exit $RC_ERR
 }

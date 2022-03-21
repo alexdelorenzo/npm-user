@@ -70,7 +70,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  err printf "Configuring npm for use in shell: %s\n" "$shell"
+  err printf -- "Configuring npm for use in shell: %s\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;

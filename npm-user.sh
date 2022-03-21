@@ -30,13 +30,14 @@ shopt -s expand_aliases extglob
 alias err='>&2'
 alias quiet='&>/dev/null'
 
-alias end="printf '$NC'"
-alias red="printf '$RED'"
-alias green="printf '$GREEN'"
+alias color-end="printf '$NC'"
+alias color-red="printf '$RED'"
+alias color-green="printf '$GREEN'"
 alias in-red="color red"
 alias in-green="color green"
 
 alias indent="paste /dev/null - | expand -$INDENT"
+alias get-prefix="npm config get prefix"
 
 
 color() {
@@ -46,13 +47,12 @@ color() {
 
   printf "$color"
   printf "${args[@]}"
-  end
+  color-end
 }
 
 
-
-fail-and-exit() {
-  err in-red "An error prevented the script from finishing, "
+warn-and-exit() {
+  err in-red "\nAn error prevented the script from completing, "
   err in-red "which could leave your system in an inconsistent state.\n"
   err in-red "Please fix any errors and run the script again.\n"
 
@@ -70,7 +70,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  err printf -- "Configuring npm for use in shell: %s\n" "$shell"
+  err printf -- "Shell to use rootless npm in: %s.\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
@@ -141,34 +141,34 @@ main() {
   local bin="$(expand-tilde "${2:-$NPM_BIN}")"
   local man="$(expand-tilde "${3:-$NPM_MAN}")"
 
-  printf "Creating %s and %s\n" "$bin" "$man"
+  printf "Creating %s & %s.\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
     err printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
-    fail-and-exit
+    warn-and-exit
   }
   
-  printf "Setting npm prefix.\n"
+  printf "Changing npm prefix from %s -> %s.\n" "$(get-prefix)" "$NPM_ROOT"
   set-prefix || {
     err printf "Couldn't set npm prefix.\n"
     quiet type npm || err printf \
       "Can't find npm in your \$PATH. Please install npm and try again.\n"
 
-    fail-and-exit
+    warn-and-exit
   }
 
-  if ! already-added "$rc" "$bin" "$man"; then
+  already-added "$rc" "$bin" "$man" || {
     printf "Writing shell exports to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"
  
-  fi || {
-    err printf "Unable to write to %s.\n" "$rc"
+  } || {
+    err printf "\nUnable to write to %s.\n" "$rc"
     err printf "Add the following to your shell's configuration file:\n\n"
     get-vars "$bin" "$man" | indent
 
-    fail-and-exit
+    warn-and-exit
   }
 
-  printf "Done.\n\n"
+  printf "Completed successfully.\n\n"
   in-green "To load the changes in this shell, run:\n"
   in-green "\tsource %s\n" "$rc"
 }

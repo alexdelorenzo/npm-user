@@ -61,9 +61,9 @@ fail-and-exit() {
 
 
 get-shell() {
-  test -n "$SHELL" && printf "$SHELL" || {
+  test -n "$SHELL" && printf -- "$SHELL" || {
     local path="$(ps -o comm= -p "$PPID")"
-    printf "$(basename -- "$path")"
+    printf -- "$(basename -- "$path")"
   }
 }
 

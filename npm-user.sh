@@ -4,6 +4,7 @@ export ROOT="${1:-$HOME}"
 export RC="$2"
 export BIN="$3"
 export MAN="$4"
+export SHELL="$5"
 
 export NPM_DIR=".npm-packages"
 export NPM_ROOT="$ROOT/$NPM_DIR"
@@ -21,8 +22,8 @@ export RC_OK=0
 export RC_ERR=1
 export INDENT=2
 
-set -eo pipefail
-shopt -s expand_aliases
+set -euo pipefail
+shopt -s expand_aliases extglob
 
 
 alias err='>&2'
@@ -32,15 +33,40 @@ alias end="printf '$NC'"
 alias indent="paste /dev/null - | expand -$INDENT"
 
 
+in-red() {
+  local content="${@:2}"
+
+  red
+  printf "$content"
+  end
+}
+
+
+fail-and-exit() {
+  err red
+  err printf "An error prevented the script from finishing, "
+  err printf "which could leave your system in an inconsistent state.\n"
+  err printf "Please fix any error and run the script again.\n"
+  err end
+
+  exit $RC_ERR
+}
+
+
 get-shell-conf() {
-  local shell="$(ps -o comm= -p "$PPID")"
+  test -n "$SHELL" && local shell="$SHELL" || {
+    local path="$(ps -o comm= -p "$PPID")"
+    local shell="$(basename -- "$path")"
+  }
+
+  err printf "Found shell: %s\n" "$shell"
 
   case "$shell" in
-    bash*)  printf "$BASH_RC" ;;
-    zsh*)  printf "$ZSH_RC" ;;
-    sh*)  printf "$SH_RC" ;;
-    *)
-      printf "$SH_RC"
+    ?(-)bash)  printf "$BASH_RC" ;;
+    ?(-)zsh)  printf "$ZSH_RC" ;;
+    ?(-)sh)  printf "$SH_RC" ;;
+    *)  printf "$SH_RC"
+
       err red
       err printf "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
       err printf "Ensure your shell's variables are set manually.\n"
@@ -68,7 +94,9 @@ create-paths() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
 
-  mkdir --parents --verbose "$bin" "$man"
+  # *bsd & macos `mkdir` doesn't have long option names
+  # mkdir --parents --verbose "$bin" "$man"
+  mkdir -p -v "$bin" "$man"
 }
 
 
@@ -107,7 +135,7 @@ main() {
   printf "Creating %s and %s\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
     printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
-    return $RC_ERR
+    fail-and-exit
   }
   
   printf "Setting npm prefix.\n"
@@ -116,11 +144,11 @@ main() {
     quiet type npm || \
       printf "Can't find npm in your \$PATH. Please install npm and try again.\n"
 
-    return $RC_ERR
+    fail-and-exit
   }
 
   if ! already-added "$rc" "$bin" "$man"; then
-    printf "Writing to %s.\n" "$rc"
+    printf "Writing shell exports to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"
  
   fi || {
@@ -128,7 +156,7 @@ main() {
     printf "Add the following to your shell's configuration file:\n\n"
     get-vars "$bin" "$man" | indent
 
-    return $RC_ERR
+    fail-and-exit
   }
 
   printf "Done.\n\n"

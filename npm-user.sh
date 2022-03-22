@@ -95,7 +95,7 @@ export DEFAULT_RC="$(get-shell-conf)"
 
 expand-tilde() {
   local path="$1" 
-  echo "${path/#\~/$HOME}"
+  printf "${path/#\~/$HOME}"
 }
 
 

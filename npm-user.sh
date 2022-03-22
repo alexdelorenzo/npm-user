@@ -70,7 +70,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  err printf -- "Shell to use rootless npm in: %s.\n" "$shell"
+  printf -- "Shell to use rootless npm in: %s.\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
@@ -78,11 +78,11 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-      err in-red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
-      err in-red "Ensure your shell's variables are set manually.\n"
+        err in-red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
+        err in-red "Ensure your shell's variables are set manually.\n"
 
-      return $RC_ERR
-      ;;
+        return $RC_ERR
+        ;;
 
   esac
 
@@ -163,7 +163,7 @@ main() {
  
   } || {
     err printf "\nUnable to write to %s.\n" "$rc"
-    err printf "Add the following to your shell's configuration file:\n\n"
+    printf "Add the following to your shell's configuration file:\n\n"
     get-vars "$bin" "$man" | indent
 
     warn-and-exit
@@ -173,5 +173,6 @@ main() {
   in-green "To load the changes in this shell, run:\n"
   in-green "\tsource %s\n\n" "$rc"
 }
+
 
 main "$RC" "$BIN" "$MAN"

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
 export ROOT="${1:-$HOME}"
-export RC="$2"
-export BIN="$3"
-export MAN="$4"
-export SHELL="$5"
+export SHELL="$2"
+export RC="$3"
+export BIN="$4"
+export MAN="$5"
 
 export NPM_DIR=".npm-packages"
 export NPM_ROOT="$ROOT/$NPM_DIR"
@@ -29,6 +29,7 @@ shopt -s expand_aliases extglob
 
 alias err='>&2'
 alias quiet='&>/dev/null'
+alias indent="paste /dev/null - | expand -$INDENT"
 
 alias color-end="printf '$NC'"
 alias color-red="printf '$RED'"
@@ -36,7 +37,7 @@ alias color-green="printf '$GREEN'"
 alias in-red="color red"
 alias in-green="color green"
 
-alias indent="paste /dev/null - | expand -$INDENT"
+alias set-prefix='npm config set prefix "$NPM_ROOT"'
 alias get-prefix="npm config get prefix"
 
 
@@ -106,11 +107,6 @@ create-paths() {
   # *bsd & macos `mkdir` doesn't have long option names
   # mkdir --parents --verbose "$bin" "$man"
   mkdir -p -v "$bin" "$man"
-}
-
-
-set-prefix() {
-  npm config set prefix "$NPM_ROOT"
 }
 
 

@@ -25,7 +25,7 @@ The script takes 5 optional positional arguments:
   5. `man`: Manpage directory for `npm`. Default is `$root/.npm-packages/share/man`.
 
 ### Passing options
-If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work  with it, you can run:
+If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:
 ```bash
 $ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" \
     | bash -s "~/.local" "zsh"

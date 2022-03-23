@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
-export ROOT="${1:-$ROOT}"
-export ROOT="${ROOT:-$HOME}"
-export SHELL="${2:-$SHELL_NAME}"
-export RC="${3:-$SHELL_RC}"
+export ROOT="${1:-${ROOT:-$HOME}}"
+export SHELL_NAME="${2:-$SHELL_NAME}"
+export SHELL_RC="${3:-$SHELL_RC}"
 export BIN="${4:-$BIN}"
 export MAN="${5:-$MAN}"
 
@@ -27,7 +26,8 @@ export RC_OK=0
 export RC_ERR=1
 export INDENT=2
 
-set -euo pipefail
+set -Eeuo pipefail
+trap 'warn-and-exit' ERR
 shopt -s expand_aliases extglob
 
 
@@ -77,7 +77,7 @@ warn-and-exit() {
 
 
 get-shell() {
-  test -n "$SHELL" && printf -- "$SHELL" || {
+  test -n "$SHELL_NAME" && printf -- "$SHELL_NAME" || {
     local path="$(ps -o comm= -p "$PPID")"
     printf -- "$(basename -- "$path")"
   }
@@ -157,7 +157,7 @@ main() {
     err printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     warn-and-exit
   }
-  
+
   printf "Changing npm prefix from %s -> %s.\n" "$(get-prefix)" "$NPM_ROOT"
   set-prefix || {
     err printf "Couldn't set npm prefix.\n"
@@ -186,4 +186,4 @@ main() {
 }
 
 
-main "$RC" "$BIN" "$MAN"
+main "$SHELL_RC" "$BIN" "$MAN"

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
-export ROOT="${1:-$HOME}"
+export ROOT="${1:-$ROOT}"
+export ROOT="${ROOT:-$HOME}"
 export SHELL="${2:-$SHELL_NAME}"
 export RC="${3:-$SHELL_RC}"
 export BIN="${4:-$BIN}"

@@ -17,18 +17,24 @@ $ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-use
 You can check out [the script's requirements here](#requirements).
 
 ### Options
-The script takes 5 optional positional arguments:
-  1. `root`: The root directory for `npm`. Default is `$HOME`.
-  2. `shell`: Name of the shell to configure. Default is your running shell.
-  3. `rc`: Shell configuration file. The script will automatically detect yours, or will default to `$HOME/.profile`.
-  4. `bin`: `npm`'s executable directory. Default is `$root/.npm-packages/bin`.
-  5. `man`: Manpage directory for `npm`. Default is `$root/.npm-packages/share/man`.
+The script takes 5 optional positional arguments, or you can set [environment variables](https://en.wikipedia.org/wiki/Environment_variable):
+  1. `$ROOT`: The root directory for `npm`. Default is `$HOME`.
+  2. `$SHELL_NAME`: Name of the shell to configure. Default is your running shell.
+  3. `$SHELL_RC`: Shell configuration file. The script will automatically detect yours, or will default to `$HOME/.profile`.
+  4. `$BIN`: `npm`'s executable directory. Default is `$root/.npm-packages/bin`.
+  5. `$MAN`: Manpage directory for `npm`. Default is `$root/.npm-packages/share/man`.
 
 ### Passing options
 If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:
 ```bash
 $ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" \
     | bash -s "~/.local" "zsh"
+```
+
+You can also use environment variables:
+```bash
+$ export ROOT="~/.local" SHELL_NAME="zsh"
+$ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" | bash
 ```
 
 ### Confirming it works

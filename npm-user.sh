@@ -16,9 +16,12 @@ export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export SH_RC="$HOME/.profile"
 
-export GREEN='\e[0;32m'
-export RED='\e[0;31m'
-export NC='\e[0m'
+declare -A FMT=(
+  [GREEN]='\e[0;32m'
+  [RED]='\e[0;31m'
+  [BOLD]='\e[1m'
+  [END]='\e[0m'
+)
 
 export RC_OK=0
 export RC_ERR=1
@@ -30,32 +33,42 @@ shopt -s expand_aliases extglob
 
 alias err='>&2'
 alias quiet='&>/dev/null'
+alias end-fmt='printf "${FMT[END]}"'
 alias indent="paste /dev/null - | expand -$INDENT"
-
-alias in-red="color red"
-alias in-green="color green"
-alias end-color="printf '$NC'"
-
 
 alias set-prefix='npm config set prefix "$NPM_ROOT"'
 alias get-prefix="npm config get prefix"
 
 
-color() {
-  local var="${1^^}"
-  local args=("${@:2}")
-  local color="${!var}"
+fmt() {
+  local key= color= weight= val=
 
-  printf "$color"
+  while true; do
+    key="${1^^}"
+
+    case "$key" in
+      RED|GREEN)  color="${FMT[$key]}" ;;
+      BOLD)  weight="${FMT[$key]}" ;;
+      *)  break ;;
+
+    esac
+
+    shift
+  done
+
+  local codes="$color$weight"
+  local args=("${@}")
+
+  printf "$codes"
   printf "${args[@]}"
-  end-color
+  end-fmt
 }
 
 
 warn-and-exit() {
-  err in-red "\nAn error prevented the script from completing, "
-  err in-red "which could leave your system in an inconsistent state.\n"
-  err in-red "Please fix any errors and run the script again.\n"
+  err fmt bold red "\n\nAn error prevented the script from completing, "
+  err fmt bold red "which could leave your system in an inconsistent state.\n"
+  err fmt bold red "Please fix any errors and run the script again.\n"
 
   exit $RC_ERR
 }
@@ -79,8 +92,8 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-        err in-red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
-        err in-red "Ensure your shell's variables are set manually.\n"
+        err fmt red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
+        err fmt red "Ensure your shell's variables are set manually.\n"
 
         return $RC_ERR
         ;;
@@ -160,14 +173,14 @@ main() {
   } || {
     err printf "\nUnable to write to %s.\n" "$rc"
     printf "Add the following to your shell's configuration file:\n\n"
-    get-vars "$bin" "$man" | indent
+    fmt bold "$(get-vars "$bin" "$man" | indent)"
 
     warn-and-exit
   }
 
-  printf "Completed successfully.\n\n"
-  in-green "To load the changes in this shell, run:\n"
-  in-green "\tsource %s\n\n" "$rc"
+  fmt green "Completed successfully.\n\n"
+  fmt bold green "To load the changes in this shell, run:\n"
+  fmt bold green "\tsource %s\n\n" "$rc"
 }
 
 

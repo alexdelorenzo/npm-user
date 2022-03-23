@@ -34,6 +34,8 @@ shopt -s expand_aliases extglob
 alias err='>&2'
 alias quiet='&>/dev/null'
 alias end-fmt='printf "${FMT[END]}"'
+alias loud-err="err fmt bold red"
+alias loud-success="fmt bold green"
 alias indent="paste /dev/null - | expand -$INDENT"
 
 alias set-prefix='npm config set prefix "$NPM_ROOT"'
@@ -66,9 +68,9 @@ fmt() {
 
 
 warn-and-exit() {
-  err fmt bold red "\n\nAn error prevented the script from completing, "
-  err fmt bold red "which could leave your system in an inconsistent state.\n"
-  err fmt bold red "Please fix any errors and run the script again.\n"
+  loud-err "\n\nAn error prevented the script from completing, "
+  loud-err "which could leave your system in an inconsistent state.\n"
+  loud-err "Please fix any errors and run the script again.\n"
 
   exit $RC_ERR
 }
@@ -84,7 +86,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  err printf -- "Shell to use rootless npm in: %s.\n" "$shell"
+  err printf -- "Shell to use rootless npm with: %s.\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
@@ -92,8 +94,8 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-        err fmt red "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
-        err fmt red "Ensure your shell's variables are set manually.\n"
+        loud-err "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
+        loud-err "Ensure your shell's variables are set manually.\n"
 
         return $RC_ERR
         ;;
@@ -179,8 +181,8 @@ main() {
   }
 
   fmt green "Completed successfully.\n\n"
-  fmt bold green "To load the changes in this shell, run:\n"
-  fmt bold green "\tsource %s\n\n" "$rc"
+  loud-success "To load the changes in this shell, run:\n"
+  loud-success "\tsource %s\n\n" "$rc"
 }
 
 

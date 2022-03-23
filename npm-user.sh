@@ -41,7 +41,7 @@ alias get-prefix="npm config get prefix"
 
 
 fmt() {
-  local key= color= weight= val=
+  local key= color= weight=
 
   while true; do
     key="${1^^}"

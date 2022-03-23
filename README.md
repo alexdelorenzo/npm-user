@@ -21,8 +21,8 @@ The script takes 5 optional positional arguments, or you can set [environment va
   1. `$ROOT`: The root directory for `npm`. Default is `$HOME`.
   2. `$SHELL_NAME`: Name of the shell to configure. Default is your running shell.
   3. `$SHELL_RC`: Shell configuration file. The script will automatically detect yours, or will default to `$HOME/.profile`.
-  4. `$BIN`: `npm`'s executable directory. Default is `$root/.npm-packages/bin`.
-  5. `$MAN`: Manpage directory for `npm`. Default is `$root/.npm-packages/share/man`.
+  4. `$BIN`: `npm`'s executable directory. Default is `$ROOT/.npm-packages/bin`.
+  5. `$MAN`: Manpage directory for `npm`. Default is `$ROOT/.npm-packages/share/man`.
 
 ### Passing options
 If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:

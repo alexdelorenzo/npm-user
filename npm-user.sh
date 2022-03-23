@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Copyright 2022 Alex DeLorenzo <alexdelorenzo.dev>. Licensed under the GPLv3.
 export ROOT="${1:-$HOME}"
-export SHELL="$2"
-export RC="$3"
-export BIN="$4"
-export MAN="$5"
+export SHELL="${2:-$SHELL_NAME}"
+export RC="${3:-$SHELL_RC}"
+export BIN="${4:-$BIN}"
+export MAN="${5:-$MAN}"
 
 export NPM_DIR=".npm-packages"
 export NPM_ROOT="$ROOT/$NPM_DIR"
@@ -15,9 +15,9 @@ export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export SH_RC="$HOME/.profile"
 
-export GREEN='\033[0;32m'
-export RED='\033[0;31m'
-export NC='\033[0m'
+export GREEN='\e[0;32m'
+export RED='\e[0;31m'
+export NC='\e[0m'
 
 export RC_OK=0
 export RC_ERR=1
@@ -31,24 +31,23 @@ alias err='>&2'
 alias quiet='&>/dev/null'
 alias indent="paste /dev/null - | expand -$INDENT"
 
-alias color-end="printf '$NC'"
-alias color-red="printf '$RED'"
-alias color-green="printf '$GREEN'"
 alias in-red="color red"
 alias in-green="color green"
+alias end-color="printf '$NC'"
+
 
 alias set-prefix='npm config set prefix "$NPM_ROOT"'
 alias get-prefix="npm config get prefix"
 
 
 color() {
-  local name="${1^^}"
+  local var="${1^^}"
   local args=("${@:2}")
-  local color="${!name}"
+  local color="${!var}"
 
   printf "$color"
   printf "${args[@]}"
-  color-end
+  end-color
 }
 
 
@@ -71,7 +70,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  printf -- "Shell to use rootless npm in: %s.\n" "$shell"
+  err printf -- "Shell to use rootless npm in: %s.\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;

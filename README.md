@@ -1,7 +1,7 @@
 # 🏠 Install `npm` packages as a user
-After running this script, `npm` will install packages as your local user. The script will set up `npm` user directories for you, and then automatically add them to your `$PATH`.
+After running this script, `npm` will install packages as your non-root user. The script will set up `npm` user directories for you, and then add them to your `$PATH`.
 
-You won't need `root` privileges because packages won't be installed at the system level:
+Packages can then be installed without root privileges:
 ```bash
 $ npm install -g yarn
 $ type yarn
@@ -20,7 +20,7 @@ You can check out [the script's requirements here](#requirements).
 The script takes 5 optional positional arguments:
   1. `root`: The root directory for `npm`. Default is `$HOME`.
   2. `shell`: Name of the shell to configure. Default is your running shell.
-  3. `rc`: Shell configuration file. The script with automatically detect yours, or default to `$HOME/.profile`.
+  3. `rc`: Shell configuration file. The script will automatically detect yours, or will default to `$HOME/.profile`.
   4. `bin`: `npm`'s executable directory. Default is `$root/.npm-packages/bin`.
   5. `man`: Manpage directory for `npm`. Default is `$root/.npm-packages/share/man`.
 

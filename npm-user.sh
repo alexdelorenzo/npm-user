@@ -14,6 +14,7 @@ export NPM_MAN="$NPM_ROOT/share/man"
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
 export SH_RC="$HOME/.profile"
+export DEFAULT_RC
 
 declare -A FMT=(
   [GREEN]='\e[0;32m'
@@ -24,6 +25,7 @@ declare -A FMT=(
 
 export RC_OK=0
 export RC_ERR=1
+export RC_QUIT=2
 export INDENT=2
 
 set -Eeuo pipefail
@@ -33,8 +35,10 @@ shopt -s expand_aliases extglob
 
 alias err='>&2'
 alias quiet='&>/dev/null'
+alias quiet-err='2>/dev/null'
+alias warn='err printf'
 alias end-fmt='printf "${FMT[END]}"'
-alias loud-err="err fmt bold red"
+alias loud-warn="err fmt bold red"
 alias loud-success="fmt bold green"
 alias indent="paste /dev/null - | expand -$INDENT"
 
@@ -68,9 +72,9 @@ fmt() {
 
 
 warn-and-exit() {
-  loud-err "\n\nAn error prevented the script from completing, "
-  loud-err "which could leave your system in an inconsistent state.\n"
-  loud-err "Please fix any errors and run the script again.\n"
+  loud-warn "\n\nAn error prevented the script from completing, "
+  loud-warn "which could leave your system in an inconsistent state.\n"
+  loud-warn "Please fix any errors and run the script again.\n"
 
   exit $RC_ERR
 }
@@ -86,7 +90,7 @@ get-shell() {
 
 get-shell-conf() {
   local shell="$(get-shell)"
-  err printf -- "Shell to use rootless npm with: %s.\n" "$shell"
+  warn -- "Shell to use rootless npm with: %s.\n" "$shell"
 
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
@@ -94,8 +98,8 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-        loud-err "Unrecognized shell, defaulting to %s. \n" "$SH_RC"
-        loud-err "Ensure your shell's variables are set manually.\n"
+        loud-warn "\nUnrecognized shell, defaulting to %s. \n" "$SH_RC"
+        loud-warn "Ensure your shell's variables are set manually.\n"
 
         return $RC_ERR
         ;;
@@ -106,7 +110,10 @@ get-shell-conf() {
 }
 
 
-export DEFAULT_RC="$(get-shell-conf)"
+DEFAULT_RC="$(get-shell-conf)" || {
+   read -ern 1 -sp $'\n[Hit enter to continue]\n' cont
+   test "$cont" != "" && exit $RC_QUIT
+}
 
 
 expand-tilde() {
@@ -128,13 +135,14 @@ create-paths() {
 get-vars() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
+  local manpath="${MANPATH:-$(manpath)}"
 
   cat <<EOF
 export PATH="\$PATH:$bin"
-export MANPATH="\${MANPATH:-\$(manpath)}:$man"
+export MANPATH="$manpath:$man"
 export NPM_PACKAGES="$NPM_ROOT"
 EOF
-}
+} quiet-err
 
 
 already-added() {
@@ -143,7 +151,7 @@ already-added() {
   local man="${2:-$NPM_MAN}"
   local vars="$(get-vars "$bin" "$man")"
 
-  quiet grep "$vars" "$rc"
+  quiet grep -z "$vars" "$rc"
 }
 
 
@@ -154,14 +162,14 @@ main() {
 
   printf "Creating %s & %s.\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
-    err printf "Couldn't create paths: %s and %s.\n" "$bin" "$man"
+    warn "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     warn-and-exit
   }
 
   printf "Changing npm prefix from %s -> %s.\n" "$(get-prefix)" "$NPM_ROOT"
   set-prefix || {
-    err printf "Couldn't set npm prefix.\n"
-    quiet type npm || err printf \
+    warn "Couldn't set npm prefix.\n"
+    quiet type npm || warn \
       "Can't find npm in your \$PATH. Please install npm and try again.\n"
 
     warn-and-exit
@@ -173,7 +181,7 @@ main() {
     get-vars "$bin" "$man" >> "$rc"
  
   } || {
-    err printf "\nUnable to write to %s.\n" "$rc"
+    warn "\nUnable to write to %s.\n" "$rc"
     printf "Add the following to your shell's configuration file:\n\n"
     fmt bold "$(get-vars "$bin" "$man" | indent)"
 

@@ -27,14 +27,14 @@ The script takes 5 optional positional arguments, or you can set [environment va
 ### Passing options
 If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:
 ```bash
-$ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" \
-    | bash -s "~/.local" "zsh"
+$ export URL="https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh"
+$ curl -s "$URL" | bash -s "~/.local" "zsh"
 ```
 
 You can also use environment variables:
 ```bash
 $ export ROOT="~/.local" SHELL_NAME="zsh"
-$ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-user.sh" | bash
+$ curl -s "$URL" | bash
 ```
 
 ### Confirming it works
@@ -47,7 +47,6 @@ yarn is /home/user/.npm-packages/bin/yarn
 
 ## Requirements
 ### Dependencies
-
 - Bash, GNU Coreutils and `grep`
 - `curl`
 - NPM

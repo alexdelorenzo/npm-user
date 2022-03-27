@@ -58,8 +58,9 @@ This script works with configuration files for the following shells:
  - `bash`
  - `zsh`
  - `fish`
+ - `sh`
 
-The script will default to `$HOME/.profile` if it doesn't recognize any of the shells from above. Both `sh` and `ksh` use `$HOME/.profile`, but the script wasn't tested on them.
+The script will default to `$HOME/.profile` if it doesn't recognize any of the shells from above. `ksh` uses `$HOME/.profile`, but the script wasn't tested on it.
 
 #### Operating systems
 This script will work on any POSIX compatible system or compatibility layer.

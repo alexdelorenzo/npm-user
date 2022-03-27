@@ -95,6 +95,7 @@ get-shell-conf() {
   case "$shell" in
     ?(-)bash)  printf "$BASH_RC" ;;
     ?(-)zsh)  printf "$ZSH_RC" ;;
+    ?(-)fish)  printf "$SH_RC" ;;
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 

@@ -18,11 +18,14 @@ You can check out [the script's requirements here](#requirements).
 
 ### Options
 The script takes 5 optional positional arguments, or you can set [environment variables](https://en.wikipedia.org/wiki/Environment_variable):
-  1. `$ROOT`: The root directory for `npm`. Default is `$HOME`.
-  2. `$SHELL_NAME`: Name of the shell to configure. Default is your running shell.
-  3. `$SHELL_RC`: Shell configuration file. The script will automatically detect yours, or will default to `$HOME/.profile`.
-  4. `$BIN`: `npm`'s executable directory. Default is `$ROOT/.npm-packages/bin`.
-  5. `$MAN`: Manpage directory for `npm`. Default is `$ROOT/.npm-packages/share/man`.
+
+| Position | Variable name | Description | Default value |
+| --|------|-------------|-------- |
+| 1 | `$ROOT` | The root directory for `npm` | `$HOME` |
+| 2 | `$SHELL_NAME` | Name of the shell to configure | Current shell |
+| 3 | `$SHELL_RC` | Shell configuration file, automatically detected | `$HOME/.profile` |
+| 4 | `$BIN` | `npm`'s executable directory | `$ROOT/.npm-packages/bin` |
+| 5 | `$MAN` | [Manpage](https://en.wikipedia.org/wiki/Man_page) directory for `npm` | `$ROOT/.npm-packages/share/man` |
 
 ### Passing options
 If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:

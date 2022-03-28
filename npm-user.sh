@@ -34,8 +34,10 @@ shopt -s expand_aliases extglob
 
 
 alias err='>&2'
+alias input="</dev/tty"
 alias quiet='&>/dev/null'
 alias quiet-err='2>/dev/null'
+
 alias warn='err printf'
 alias end-fmt='printf "${FMT[END]}"'
 alias loud-warn="err fmt bold red"
@@ -112,7 +114,7 @@ get-shell-conf() {
 
 
 DEFAULT_RC="$(get-shell-conf)" || {
-   read -ern 1 -sp $'\n[Hit enter to continue]\n' cont
+   input read -ern 1 -sp $'\n[Hit enter to continue]\n' cont
    test "$cont" != "" && exit $RC_QUIT
 }
 

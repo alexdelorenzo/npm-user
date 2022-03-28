@@ -44,6 +44,7 @@ alias loud-warn="err fmt bold red"
 alias loud-success="fmt bold green"
 alias indent="paste /dev/null - | expand -$INDENT"
 
+alias should-continue="read -ern 1 -sp $'\n[Hit enter to continue]\n' cont"
 alias set-prefix='npm config set prefix "$NPM_ROOT"'
 alias get-prefix="npm config get prefix"
 
@@ -114,7 +115,7 @@ get-shell-conf() {
 
 
 DEFAULT_RC="$(get-shell-conf)" || {
-   input read -ern 1 -sp $'\n[Hit enter to continue]\n' cont
+   input should-continue
    test "$cont" != "" && exit $RC_QUIT
 }
 

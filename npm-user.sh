@@ -152,7 +152,7 @@ EOF
 already-added() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
-  local man="${2:-$NPM_MAN}"
+  local man="${3:-$NPM_MAN}"
   local vars="$(get-vars "$bin" "$man")"
 
   quiet grep -z "$vars" "$rc"

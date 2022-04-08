@@ -102,7 +102,7 @@ get-shell-conf() {
     ?(-)sh)  printf "$SH_RC" ;;
     *)  printf "$SH_RC"
 
-        loud-warn "\nUnrecognized shell, defaulting to %s. \n" "$SH_RC"
+        loud-warn "\nUnrecognized shell, defaulting to %s.\n" "$SH_RC"
         loud-warn "Ensure your shell's variables are set manually.\n"
 
         return $RC_ERR
@@ -121,7 +121,7 @@ DEFAULT_RC="$(get-shell-conf)" || {
 
 
 expand-tilde() {
-  local path="$1" 
+  local path="$1"
   printf "${path/#\~/$HOME}"
 }
 
@@ -153,10 +153,14 @@ already-added() {
   local rc="${1:-$DEFAULT_RC}"
   local bin="${2:-$NPM_BIN}"
   local man="${3:-$NPM_MAN}"
-  local vars="$(get-vars "$bin" "$man")"
 
-  quiet grep -z "$vars" "$rc"
-}
+  local vars="$(get-vars "$bin" "$man")"
+  local IFS=$"\n"
+
+  for line in "$vars"; do
+    grep "$line" "$rc" || return $RC_ERR
+  done
+} quiet
 
 
 main() {
@@ -183,7 +187,7 @@ main() {
   already-added "$rc" "$bin" "$man" || {
     printf "Writing shell exports to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"
- 
+
   } || {
     warn "\nUnable to write to %s.\n" "$rc"
     printf "Add the following to your shell's configuration file:\n\n"

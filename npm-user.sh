@@ -48,7 +48,7 @@ alias loud-success="fmt bold green"
 alias indent="paste /dev/null - | expand -$INDENT"
 
 alias should-continue="read -ern 1 -sp $'\n[Hit enter to continue]\n' cont"
-alias set-prefix='npm config set prefix "$NPM_ROOT"'
+alias set-prefix='npm config set prefix'
 alias get-prefix="npm config get prefix"
 
 
@@ -148,7 +148,10 @@ store-and-set-prefix() {
     warn "Couldn't log old prefix to %s.\n" "$PREFIXES"
   }
 
-  set-prefix
+  set-prefix "$NPM_ROOT" || {
+    warn "Couldn't set npm prefix.\n"
+    return $RC_ERR
+  }
 
   test -n "$REINSTALL" && {
     fmt bold "Reinstalling packages.\n"
@@ -161,7 +164,16 @@ store-and-set-prefix() {
 
 install-old-packages() {
   local prefix="$1"
-  local pkgs=( $(ls "$(npm root -g --prefix "$prefix")") )
+
+  local root="$(npm root -g --prefix "$prefix")"
+  local pkgs
+
+  pkgs=( $(quiet-err ls "$root") ) || {
+    loud-warn "Unable to retrieve list of packages from %s.\n" "$root"
+    loud-warn 'Either fix the issue or unset the $REINSTALL option and try again.\n'
+    return $RC_ERR
+  }
+
   npm install -g ${pkgs[*]}
 }
 
@@ -204,11 +216,18 @@ main() {
     warn-and-exit
   }
 
-  printf "Changing npm prefix from %s -> %s.\n" "$(get-prefix)" "$NPM_ROOT"
+  local old="$(get-prefix)"
+  printf "Changing npm prefix from %s -> %s.\n" "$old" "$NPM_ROOT"
   store-and-set-prefix || {
-    warn "Couldn't set npm prefix.\n"
-    quiet type npm || warn \
-      "Can't find npm in your \$PATH. Please install npm and try again.\n"
+    quiet type npm || {
+      warn \
+        "Can't find npm in your \$PATH. Please install npm and try again.\n"
+
+      warn-and-exit
+    }
+
+    warn "Resetting prefix to %s.\n" "$old"
+    set-prefix "$old"
 
     warn-and-exit
   }

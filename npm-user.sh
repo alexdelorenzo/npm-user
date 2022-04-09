@@ -5,11 +5,14 @@ export SHELL_NAME="${2:-$SHELL_NAME}"
 export SHELL_RC="${3:-$SHELL_RC}"
 export BIN="${4:-$BIN}"
 export MAN="${5:-$MAN}"
+export REINSTALL="${6:-$REINSTALL}"
 
 export NPM_DIR=".npm-packages"
 export NPM_ROOT="$ROOT/$NPM_DIR"
 export NPM_BIN="$NPM_ROOT/bin"
 export NPM_MAN="$NPM_ROOT/share/man"
+
+export PREFIXES="$HOME/.npm-prefixes.log"
 
 export BASH_RC="$HOME/.bashrc"
 export ZSH_RC="$HOME/.zshrc"
@@ -136,6 +139,33 @@ create-paths() {
 }
 
 
+store-and-set-prefix() {
+  local old="$(get-prefix)"
+
+  test "$old" == "$NPM_ROOT" && return
+
+  printf "$old\n" >> "$PREFIXES" || {
+    warn "Couldn't log old prefix to %s.\n" "$PREFIXES"
+  }
+
+  set-prefix
+
+  test -n "$REINSTALL" && {
+    loud-warn "Reinstalling packages.\n"
+    install-old-packages "$old" || return $RC_ERR
+  }
+
+  return $RC_OK
+}
+
+
+install-old-packages() {
+  local prefix="$1"
+  local pkgs=( $(ls "$(npm root -g --prefix "$prefix")") )
+  npm install -g ${pkgs[*]}
+}
+
+
 get-vars() {
   local bin="${1:-$NPM_BIN}"
   local man="${2:-$NPM_MAN}"
@@ -175,7 +205,7 @@ main() {
   }
 
   printf "Changing npm prefix from %s -> %s.\n" "$(get-prefix)" "$NPM_ROOT"
-  set-prefix || {
+  store-and-set-prefix || {
     warn "Couldn't set npm prefix.\n"
     quiet type npm || warn \
       "Can't find npm in your \$PATH. Please install npm and try again.\n"

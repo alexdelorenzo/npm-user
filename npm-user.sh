@@ -151,7 +151,7 @@ store-and-set-prefix() {
   set-prefix
 
   test -n "$REINSTALL" && {
-    loud-warn "Reinstalling packages.\n"
+    fmt bold "Reinstalling packages.\n"
     install-old-packages "$old" || return $RC_ERR
   }
 

@@ -41,10 +41,10 @@ alias input="</dev/tty"
 alias quiet='&>/dev/null'
 alias quiet-err='2>/dev/null'
 
-alias warn='err printf'
+alias warn='err msg'
 alias end-fmt='printf "${FMT[END]}"'
-alias loud-warn="err fmt bold red"
-alias loud-success="fmt bold green"
+alias loud-warn="err msg bold red"
+alias loud-success="msg bold green"
 alias indent="paste /dev/null - | expand -$INDENT"
 
 alias should-continue="read -ern 1 -sp $'\n[Hit enter to continue]\n' cont"
@@ -74,6 +74,12 @@ fmt() {
   printf "$codes"
   printf "${args[@]}"
   end-fmt
+}
+
+
+msg() {
+  fmt bold "[*] "
+  fmt "$@"
 }
 
 
@@ -141,7 +147,6 @@ create-paths() {
 
 store-and-set-prefix() {
   local old="$(get-prefix)"
-
   test "$old" == "$NPM_ROOT" && return
 
   printf "$old\n" >> "$PREFIXES" || {
@@ -154,7 +159,7 @@ store-and-set-prefix() {
   }
 
   test -n "$REINSTALL" && {
-    fmt bold "Reinstalling packages.\n"
+    msg bold "Reinstalling packages.\n"
     install-old-packages "$old" || return $RC_ERR
   }
 
@@ -171,6 +176,7 @@ install-old-packages() {
   pkgs=( $(quiet-err ls "$root") ) || {
     loud-warn "Unable to retrieve list of packages from %s.\n" "$root"
     loud-warn 'Either fix the issue or unset the $REINSTALL option and try again.\n'
+
     return $RC_ERR
   }
 
@@ -210,42 +216,39 @@ main() {
   local bin="$(expand-tilde "${2:-$NPM_BIN}")"
   local man="$(expand-tilde "${3:-$NPM_MAN}")"
 
-  printf "Creating %s & %s.\n" "$bin" "$man"
+  msg "Creating %s & %s.\n" "$bin" "$man"
   create-paths "$bin" "$man" || {
     warn "Couldn't create paths: %s and %s.\n" "$bin" "$man"
     warn-and-exit
   }
 
   local old="$(get-prefix)"
-  printf "Changing npm prefix from %s -> %s.\n" "$old" "$NPM_ROOT"
+  msg "Changing npm prefix from %s -> %s.\n" "$old" "$NPM_ROOT"
   store-and-set-prefix || {
     quiet type npm || {
-      warn \
-        "Can't find npm in your \$PATH. Please install npm and try again.\n"
-
+      warn "Can't find npm in your \$PATH. Please install npm and try again.\n"
       warn-and-exit
     }
 
     warn "Resetting prefix to %s.\n" "$old"
     set-prefix "$old"
-
     warn-and-exit
   }
 
-  printf "Updating shell configuration file: %s.\n" "$rc"
+  msg "Updating shell configuration file: %s.\n" "$rc"
   already-added "$rc" "$bin" "$man" || {
-    printf "Writing shell exports to %s.\n" "$rc"
+    msg "Writing shell exports to %s.\n" "$rc"
     get-vars "$bin" "$man" >> "$rc"
 
   } || {
     warn "\nUnable to write to %s.\n" "$rc"
-    printf "Add the following to your shell's configuration file:\n\n"
-    fmt bold "$(get-vars "$bin" "$man" | indent)"
+    msg "Add the following to your shell's configuration file:\n\n"
+    msg bold "$(get-vars "$bin" "$man" | indent)"
 
     warn-and-exit
   }
 
-  fmt green "Completed successfully.\n\n"
+  msg green "Completed successfully.\n\n"
   loud-success "To load the changes in this shell, run:\n"
   loud-success "\tsource %s\n\n" "$rc"
 }

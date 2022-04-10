@@ -26,7 +26,7 @@ The script takes 6 optional positional arguments, or you can set [environment va
 | 3 | `$SHELL_RC` | Shell configuration file, automatically detected | `$HOME/.profile` |
 | 4 | `$BIN` | `npm`'s executable directory | `$ROOT/.npm-packages/bin` |
 | 5 | `$MAN` | [Manpage](https://en.wikipedia.org/wiki/Man_page) directory for `npm` | `$ROOT/.npm-packages/share/man` |
-| 6 | `$REINSTALL` | Set to any non-zero value to reinstall old `npm` packages in your new `$ROOT` | Unset |
+| 6 | `$REINSTALL` | Set to any non-null value to reinstall old `npm` packages in your new `$ROOT` | Unset |
 
 
 ### Passing options

@@ -26,6 +26,8 @@ The script takes 5 optional positional arguments, or you can set [environment va
 | 3 | `$SHELL_RC` | Shell configuration file, automatically detected | `$HOME/.profile` |
 | 4 | `$BIN` | `npm`'s executable directory | `$ROOT/.npm-packages/bin` |
 | 5 | `$MAN` | [Manpage](https://en.wikipedia.org/wiki/Man_page) directory for `npm` | `$ROOT/.npm-packages/share/man` |
+| 6 | `$REINSTALL` | Set to any non-zero value to reinstall old `npm` packages in your new `$ROOT` | Unset |
+
 
 ### Passing options
 If you want to set your `npm` path to `~/.local/.npm-packages`, instead of `~/.npm-packages`, and configure `zsh` to work with it, you can run:

@@ -1,5 +1,5 @@
-# 🏠 Install `npm` packages as a user
-After running this script, `npm` will install packages as your non-root user. The script will set up `npm` user directories for you, and then add them to your `$PATH`.
+# 🏠 Run `npm install -g` without `sudo`
+After running this script, you will be able run `npm install -g` without `sudo`, because`npm` will install packages as your non-root user. The script will set up `npm` user directories for you, and then add them to your `$PATH`.
 
 Packages can then be installed without root privileges:
 ```bash

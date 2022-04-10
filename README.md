@@ -17,7 +17,7 @@ $ curl -s "https://raw.githubusercontent.com/alexdelorenzo/npm-user/main/npm-use
 You can check out [the script's requirements here](#requirements).
 
 ### Options
-The script takes 5 optional positional arguments, or you can set [environment variables](https://en.wikipedia.org/wiki/Environment_variable):
+The script takes 6 optional positional arguments, or you can set [environment variables](https://en.wikipedia.org/wiki/Environment_variable):
 
 | Position | Variable name | Description | Default value |
 | --|------|-------------|-------- |

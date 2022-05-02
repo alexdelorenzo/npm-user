@@ -124,8 +124,8 @@ get-shell-conf() {
 
 
 DEFAULT_RC="$(get-shell-conf)" || {
-   input should-continue
-   test "$cont" != "" && exit $RC_QUIT
+  input should-continue
+  test "$cont" != "" && exit $RC_QUIT
 }
 
 
